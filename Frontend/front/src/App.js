@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import SearchForm from "./components/SearchForm";
@@ -7,37 +7,26 @@ import SearchPage from "./pages/SearchPage";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
+import axios from "axios";
 import "./App.css";
 
-// Define your dummy pet data
-const pets = [
-  {
-    name: "Bella",
-    breed: "Labrador Retriever",
-    location: "Denver, CO",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Labrador_on_Quantock_%282175262184%29.jpg/960px-Labrador_on_Quantock_%282175262184%29.jpg",
-  },
-  {
-    name: "Milo",
-    breed: "Orange Tabby",
-    location: "Austin, TX",
-    image: "https://www.rover.com/blog/wp-content/uploads/cat-breathing-fast-orange-kitten.jpg",
-  },
-  {
-    name: "Max",
-    breed: "Australian Shepherd",
-    location: "Phoenix, AZ",
-    image: "https://www.akc.org/wp-content/uploads/2017/11/Australian-Shepherd.1.jpg",
-  },
-  {
-    name: "Luna",
-    breed: "Red Siberian Husky",
-    location: "San Diego, CA",
-    image: "https://media.istockphoto.com/id/1338954116/photo/dog-portrait-outside-at-the-park-on-summer.jpg?s=612x612&w=0&k=20&c=6sRSNWMhZj4QxeTuLS2JZLzjR_os-Gbfnil6mNjga6I=",
-  },
-];
-
 function App() {
+  const [pets, setPets] = useState([]);
+
+  useEffect(() => {
+    const fetchPets = async () => {
+      try {
+        const API_URL = process.env.REACT_APP_API_URL;
+        const response = await axios.get(`${API_URL}/api/pets`);
+        setPets(response.data);
+      } catch (error) {
+        console.error("Error fetching pets:", error);
+      }
+    };
+
+    fetchPets();
+  }, []);
+
   return (
     <Router>
       <Navbar />
@@ -48,10 +37,11 @@ function App() {
             <>
               <SearchForm />
               <div className="pet-grid">
-                {pets.map((pet, index) => (
+                {pets.map((pet, index ) => (
                   <PetCard key={index} pet={pet} />
                 ))}
               </div>
+              {/* You can later add real pets here dynamically if you want */}
             </>
           }
         />

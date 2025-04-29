@@ -1,41 +1,51 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import PetCard from "../components/PetCard";
-import SearchForm from "../components/SearchForm"; // ⬅️ Import SearchForm here
+import SearchForm from "../components/SearchForm";
+import axios from "axios";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-export default function SearchPage({ pets }) {
+export default function SearchPage() {
   const query = useQuery();
   const type = query.get("type") || "";
   const breed = query.get("breed") || "";
   const zip = query.get("zip") || "";
 
-  const filtered = pets.filter((pet) => {
-    const matchType = type
-      ? pet.type?.toLowerCase() === type.toLowerCase()
-      : true;
-    const matchBreed = breed
-      ? pet.breed?.toLowerCase().includes(breed.toLowerCase())
-      : true;
-    const matchZip = zip
-      ? pet.location?.toLowerCase().includes(zip.toLowerCase())
-      : true;
-    return matchType && matchBreed && matchZip;
-  });
+  const [pets, setPets] = useState([]);
+
+  useEffect(() => {
+    const fetchPets = async () => {
+      try {
+        const API_URL = process.env.REACT_APP_API_URL;
+        const response = await axios.get(`${API_URL}/search`, {
+          params: {
+            type,
+            breed,
+            zip,
+          },
+        });
+        console.log("Fetched filtered pets:", response.data);
+        setPets(response.data);
+      } catch (error) {
+        console.error("Error fetching pets:", error);
+      }
+    };
+
+    fetchPets();
+  }, [type, breed, zip]);
 
   return (
     <div>
-      {/* 🧡 Add the SearchForm at the top */}
       <SearchForm />
-
       <h2 style={{ textAlign: "center", marginTop: "2rem" }}>Search Results</h2>
-
       <div className="pet-grid">
-        {filtered.length > 0 ? (
-          filtered.map((pet, index) => <PetCard key={index} pet={pet} />)
+        {pets.length > 0 ? (
+          pets.map((pet, index) => (
+            <PetCard key={index} pet={pet} />
+          ))
         ) : (
           <p style={{ textAlign: "center" }}>No pets found.</p>
         )}

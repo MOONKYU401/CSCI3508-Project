@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) {
       setProfile(storedUser);
+    } else {
+      //No user? redirects to login page
+      navigate("/login");
     }
-  }, []);
+  }, [navigate]);
 
   const handleChange = (e) => {
     setProfile({ ...profile, preferences: { ...profile.preferences, [e.target.name]: e.target.value } });

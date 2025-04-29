@@ -4,14 +4,15 @@ var bcrypt = require('bcrypt-nodejs');
 
 mongoose.Promise = global.Promise;
 
+//*****I don't think we need these lines, but just to be safe I commented them out */
 //mongoose.connect(process.env.DB, { useNewUrlParser: true });
-try {
-    mongoose.connect( process.env.DB, {useNewUrlParser: true, useUnifiedTopology: true}, () =>
-        console.log("connected"));
-}catch (error) {
-    console.log("could not connect");
-}
-mongoose.set('useCreateIndex', true);
+//try {
+    //mongoose.connect( process.env.DB, {useNewUrlParser: true, useUnifiedTopology: true}, () =>
+        //console.log("connected"));
+//}catch (error) {
+    //console.log("could not connect");
+//}
+
 
 //user schema
 var UserSchema = new Schema({

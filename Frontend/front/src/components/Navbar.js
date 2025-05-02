@@ -1,28 +1,42 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import "./Navbar.css";
 
 export default function Navbar() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    window.location.href = "/";
+  const currentType = new URLSearchParams(location.search).get("type");
+
+  const handleSearchByType = (type) => {
+    const zip = user?.preferences?.location || "80014"; 
+    navigate(`/search?type=${type}&zip=${zip}`);
   };
 
   return (
-    <nav className="flex justify-between items-center p-4 shadow-md bg-white">
-      <div className="text-xl font-bold text-blue-600">
-        <Link to="/">🐾 Adopt a Pet</Link>
-      </div>
-      <div className="space-x-4 text-sm text-gray-600">
-        <Link to="/search?type=Dog">Dogs</Link>
-        <Link to="/search?type=Cat">Cats</Link>
-        <Link to="/search?type=Rabbit">Other Pets</Link>
+    <nav>
+      <Link to="/" className="logo">🐾 Adopt a Pet</Link>
+      <div className="nav-links">
+        <span onClick={() => handleSearchByType("Dog")} className={currentType === "Dog" ? "active-tab" : ""}>
+          Dogs
+        </span>
+        <span onClick={() => handleSearchByType("Cat")} className={currentType === "Cat" ? "active-tab" : ""}>
+          Cats
+        </span>
+        <span onClick={() => handleSearchByType("Other")} className={currentType === "Other" ? "active-tab" : ""}>
+          Other Pets
+        </span>
 
         {user ? (
           <>
             <Link to="/profile">Profile</Link>
-            <span style={{ cursor: "pointer" }} onClick={handleLogout}>Logout</span>
+            <span onClick={() => {
+              localStorage.removeItem("user");
+              window.location.href = "/";
+            }}>
+              Logout
+            </span>
           </>
         ) : (
           <>

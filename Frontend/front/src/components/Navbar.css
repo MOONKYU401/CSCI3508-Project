@@ -1,0 +1,57 @@
+/* Navbar container */
+nav {
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Logo */
+.logo {
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: #2c3e50;
+  text-decoration: none;
+}
+
+/* Navigation links */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.95rem;
+}
+
+/* All nav links */
+.nav-links a {
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  color: #555;
+  transition: background 0.2s;
+}
+
+.nav-links a:hover {
+  background-color: #f2f2f2;
+}
+
+/* Active link (highlighted tab) */
+.nav-links .active-tab {
+  background-color: #e0f2ff;
+  color: #0369a1;
+  font-weight: 600;
+}
+
+/* Logout span */
+.nav-links span {
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.nav-links span:hover {
+  background-color: #f2f2f2;
+}

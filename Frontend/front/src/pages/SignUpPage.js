@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import AuthForm from "../components/AuthForm";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import "./SignUpPage.css"; 
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -18,21 +19,28 @@ export default function SignUpPage() {
         password: formData.password,
       });
 
-      //Stores user info (or token) after successful signup
       localStorage.setItem("user", JSON.stringify(response.data));
-
       navigate("/profile");
 
     } catch (error) {
       console.error("Signup failed:", error.response?.data || error.message);
       alert("Could not create account. Please try again.");
-
     }
   };
 
   return (
-    <div className="page-center">
-      <AuthForm type="signup" formData={formData} setFormData={setFormData} handleSubmit={handleSubmit} />
+    <div className="signup-container">
+      <div className="signup-box">
+        <h2>Create your account</h2>
+        <p>Start your adoption journey by creating a free account.</p>
+
+        <AuthForm
+          type="signup"
+          formData={formData}
+          setFormData={setFormData}
+          handleSubmit={handleSubmit}
+        />
+      </div>
     </div>
   );
 }

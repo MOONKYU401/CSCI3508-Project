@@ -9,7 +9,7 @@ body {
 /* Navbar */
 nav {
   background-color: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
@@ -27,114 +27,6 @@ nav .logo {
   font-weight: bold;
   color: #2c3e50;
   font-size: 1.2rem;
-}
-
-/* Hero Section */
-.search-hero {
-  background-color: #fffde7;
-  padding: 3rem 1rem;
-  text-align: center;
-}
-
-.search-hero h1 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
-
-.search-hero .filters {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-bottom: 1rem;
-}
-
-.search-hero select,
-.search-hero input {
-  padding: 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-}
-
-.search-hero button {
-  padding: 0.6rem 1rem;
-  background-color: #222;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.search-hero button:hover {
-  background-color: #444;
-}
-
-/* Pet Card Grid */
-.pet-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.5rem;
-  padding: 2rem;
-}
-
-/* Pet Card */
-.pet-card {
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  overflow: hidden;
-  transition: transform 0.2s;
-}
-
-.pet-card:hover {
-  transform: scale(1.03);
-}
-
-.pet-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-}
-
-.pet-card-content {
-  padding: 1rem;
-}
-
-.pet-card h2 {
-  font-size: 1.1rem;
-  margin: 0 0 0.5rem;
-}
-
-.pet-card p {
-  margin: 0.2rem 0;
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.pet-card button {
-  margin-top: 0.7rem;
-  padding: 0.5rem 1rem;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.pet-card button:hover {
-  background-color: #43a047;
-}
-
-/* Responsive Tweak */
-@media (max-width: 600px) {
-  .search-hero h1 {
-    font-size: 1.5rem;
-  }
-
-  nav div {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
 }
 
 /* Search Hero Section */
@@ -179,3 +71,75 @@ nav .logo {
 .search-filters button:hover {
   background-color: #444;
 }
+
+/* Pet Card Grid */
+.pet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+/* Pet Card */
+.pet-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.pet-card:hover {
+  transform: scale(1.03);
+}
+
+.pet-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;         /* ✅ 정사각형 */
+  object-fit: cover;
+  background-color: #eee;
+}
+
+.pet-card-content {
+  padding: 1rem;
+  text-align: center;
+}
+
+.pet-card h2 {
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem;
+  color: #222;
+}
+
+.pet-card p {
+  margin: 0.2rem 0;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.pet-card button {
+  margin-top: 0.7rem;
+  padding: 0.5rem 1rem;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.pet-card button:hover {
+  background-color: #43a047;
+}
+
+/* Responsive Tweak */
+@media (max-width: 600px) {
+  .search-hero h1 {
+    font-size: 1.5rem;
+  }
+
+  nav div {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}
+

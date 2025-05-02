@@ -2,21 +2,26 @@ import React from "react";
 import "../App.css";
 
 export default function PetCard({ pet }) {
+  const name = pet.Name || "Unknown Name";
+  const breed = pet.Breed || pet.Breed1 || "Unknown Breed";
+  const gender = pet.Gender || "Unknown";
+  const age = pet.Age || "";
+  const image = pet.coverImagePath || "https://via.placeholder.com/400x300?text=No+Image";
+  const location = pet["Located at"] || `${pet.City || ""}, ${pet.State || ""}`;
+
   const handleAdoptClick = () => {
-    if (pet.shelter && pet.shelter.contactEmail) {
-      window.location.href = `mailto:${pet.shelter.contactEmail}?subject=Inquiry about adopting ${pet.name}`;
-    } else {
-      alert("No contact information available for this shelter.");
-    }
+    const subject = `Inquiry about adopting ${name}`;
+    window.location.href = `mailto:adopt@your-shelter.org?subject=${encodeURIComponent(subject)}`;
   };
 
   return (
     <div className="pet-card">
-      <img src={pet.imageUrl} alt={pet.name} />
+      <img src={image} alt={name} />
       <div className="pet-card-content">
-        <h2>{pet.name}</h2>
-        <p>{pet.breed}</p>
-        <p>{pet.shelter?.location}</p>
+        <h2>{name}</h2>
+        <p>{breed}</p>
+        <p>{gender} · {age}</p>
+        <p>{location}</p>
         <button onClick={handleAdoptClick}>Adopt me</button>
       </div>
     </div>

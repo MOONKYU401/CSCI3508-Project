@@ -1,21 +1,14 @@
-var passport = require('passport');
-var JwtStrategy = require('passport-jwt').Strategy;
-var ExtractJwt = require('passport-jwt').ExtractJwt;
-var User = require('./Users');
+const jwt = require("jsonwebtoken");
 
-var opts = {};
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme("jwt");
-opts.secretOrKey = process.env.SECRET_KEY;
+exports.isAuthenticated = (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1]; // "JWT <token>"
+  if (!token) return res.status(401).json({ message: "Unauthorized" });
 
-passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
-    User.findById(jwt_payload.id, function (err, user) {
-        if (user) {
-            done(null, user);
-        } else {
-            done(null, false);
-        }
-    });
-}));
-
-exports.isAuthenticated = passport.authenticate('jwt', { session : false });
-exports.secret = opts.secretOrKey ; 
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    res.status(403).json({ message: "Invalid token" });
+  }
+};

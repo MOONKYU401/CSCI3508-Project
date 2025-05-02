@@ -1,30 +1,37 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const router = express.Router();
-const User = require('./user'); // models/User.js
-const authJwt = require('./auth_jwt');
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const dotenv = require("dotenv");
+const authRoutes = require("./auth");
+const petRoutes = require("./pet");
+const userRoutes = require("./user");
+const authJwt = require("./auth_jwt");
 
+dotenv.config();
 
-router.get("/user/profile", authJwt.isAuthenticated, async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id).select("-password");
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user);
-  } catch (err) {
-    console.error("Error fetching profile:", err);
-    res.status(500).json({ message: "Server error" });
-  }
+const app = express(); 
+
+// Middlewares
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// Routes
+app.use("/auth", authRoutes);
+app.use("/pets", petRoutes);
+app.use("/user", authJwt.isAuthenticated, userRoutes); 
+
+// MongoDB 
+mongoose.connect(process.env.DB, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => {
+  console.log("Connected to MongoDB");
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+})
+.catch(err => {
+  console.error("Failed to connect to MongoDB:", err);
 });
-
-router.get("/user/saved-pets", authJwt.isAuthenticated, async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id).select("savedPets");
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user.savedPets || []);
-  } catch (err) {
-    console.error("Error fetching saved pets:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-app.use(router);

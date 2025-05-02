@@ -28,13 +28,12 @@ const UserSchema = new mongoose.Schema({
     {
       animalId: String,
       name: String,
-      Breed: String,
-      Gender: String,
-      Age: String,
-      coverImagePath: String,
-      savedAt: { type: Date, default: Date.now }
+      zipPostal: String,
+      animalType: String
     }
   ]
+  
+  
 });
 
 module.exports = mongoose.model("User", UserSchema);

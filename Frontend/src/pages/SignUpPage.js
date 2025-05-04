@@ -32,6 +32,20 @@ export default function SignUpPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const phonePattern = /^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/;
+    const zipPattern = /^\d{5}$/;
+
+    if (formData.phone && !phonePattern.test(formData.phone)) {
+      alert("Please enter a valid US phone number (e.g., 123-456-7890)");
+      return;
+    }
+
+    if (!zipPattern.test(formData.preferredZip)) {
+      alert("Please enter a valid 5-digit ZIP code");
+      return;
+    }
+
     try {
       const response = await axios.post(`${API_BASE}/auth/signup`, formData);
       localStorage.setItem("user", JSON.stringify(response.data));
@@ -97,7 +111,6 @@ export default function SignUpPage() {
           onChange={handleChange}
           style={inputStyle}
         />
-
         <select
           name="state"
           value={formData.state}
@@ -110,7 +123,6 @@ export default function SignUpPage() {
             <option key={s} value={s}>{s}</option>
           ))}
         </select>
-
         <input
           type="text"
           name="preferredZip"

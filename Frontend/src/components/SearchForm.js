@@ -11,12 +11,9 @@ export default function SearchForm() {
   const [zip, setZip] = useState("");
   const [allBreeds, setAllBreeds] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
+  const [error, setError] = useState(""); 
 
- 
   useEffect(() => {
-    console.log("initialType  ",initialType);
-    console.log("type",searchParams.get("type"));
-   
     const fetchBreeds = async () => {
       try {
         const res = await fetch(`https://api.petplace.com/breed/${type}`);
@@ -31,12 +28,6 @@ export default function SearchForm() {
     setSuggestions([]);
     setBreed("");
   }, [type]);
-
- 
-  // useEffect(() => {
-  //   localStorage.setItem("searchZip", zip);
-  //   localStorage.setItem("animalType", type);
-  // }, [zip, type]);
 
   const handleBreedChange = (e) => {
     const input = e.target.value;
@@ -59,6 +50,12 @@ export default function SearchForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!zip.trim()) {
+      setError("Please enter a ZIP code.");
+      return;
+    }
+
+    setError(""); 
     localStorage.setItem("searchZip", zip);
     localStorage.setItem("animalType", type);
     navigate(`/search?type=${type}&breed=${breed}&zip=${zip}`);
@@ -114,10 +111,15 @@ export default function SearchForm() {
           placeholder="ZIP code"
           value={zip}
           onChange={(e) => setZip(e.target.value)}
+          style={{ borderColor: error ? "red" : "" }}
         />
-
         <button type="submit">Search</button>
       </div>
+      {error && (
+        <p style={{ color: "red", marginTop: "0.5rem", fontSize: "0.9rem" }}>
+          {error}
+        </p>
+      )}
     </form>
   );
 }

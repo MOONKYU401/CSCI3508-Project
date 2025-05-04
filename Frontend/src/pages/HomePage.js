@@ -18,7 +18,6 @@ export default function HomePage() {
       setLoading(true);
 
       try {
-        // ✅ 1차 검색: zip + type + breed
         const primaryRes = await fetch("https://api.petplace.com/animal", {
           method: "POST",
           headers: {
@@ -44,7 +43,6 @@ export default function HomePage() {
         const primaryData = await primaryRes.json();
         let results = primaryData.animal || [];
 
-        // ✅ 2차 백업 검색: zip + type only (if no results)
         if (results.length === 0 && breed) {
           const backupRes = await fetch("https://api.petplace.com/animal", {
             method: "POST",
@@ -60,7 +58,7 @@ export default function HomePage() {
               animalFilters: {
                 startIndex: 0,
                 filterAnimalType: type,
-                filterBreed: [], // breed 생략
+                filterBreed: [], 
                 filterGender: "",
                 filterAge: null,
                 filterSize: null,
@@ -72,7 +70,7 @@ export default function HomePage() {
           results = backupData.animal || [];
         }
 
-        setPets(results.slice(0, 10)); // 최대 10개
+        setPets(results.slice(0, 10)); 
       } catch (err) {
         console.error("Error fetching pets:", err);
         setPets([]);

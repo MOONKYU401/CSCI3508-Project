@@ -10,7 +10,6 @@ export default function ProfilePage() {
     if (storedUser) {
       setProfile(storedUser);
     } else {
-      //No user? redirects to login page
       navigate("/login");
     }
   }, [navigate]);

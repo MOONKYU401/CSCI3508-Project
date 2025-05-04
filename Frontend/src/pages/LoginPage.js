@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 export default function LoginPage() {
@@ -91,6 +91,12 @@ export default function LoginPage() {
         >
           Login
         </button>
+        <p style={{ marginTop: "1rem", textAlign: "center", fontSize: "0.9rem" }}>
+          Not signed up yet?{" "}
+          <Link to="/signup" style={{ color: "#007bff", textDecoration: "underline" }}>
+            Click here
+          </Link>
+        </p>
       </form>
     </div>
   );

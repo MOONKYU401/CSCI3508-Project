@@ -15,13 +15,14 @@ export default function ProfilePage() {
   }, [navigate]);
 
   const handleChange = (e) => {
-    setProfile({
-      ...profile,
+    const { name, value } = e.target;
+    setProfile((prev) => ({
+      ...prev,
       preferences: {
-        ...profile.preferences,
-        [e.target.name]: e.target.value,
+        ...prev.preferences,
+        [name]: value,
       },
-    });
+    }));
   };
 
   const handleSave = () => {
@@ -31,7 +32,7 @@ export default function ProfilePage() {
 
   return (
     <div style={{ backgroundColor: "#fffbe6", minHeight: "100vh", paddingTop: "60px" }}>
-      <h1 style={{ textAlign: "center", fontSize: "2rem", fontWeight: "bold", marginBottom: "0.5rem" }}>
+      <h1 style={{ textAlign: "center", fontSize: "2rem", fontWeight: "bold", marginBottom: "1rem" }}>
         Profile Settings
       </h1>
       <p style={{ textAlign: "center", marginBottom: "2rem", color: "#555" }}>
@@ -39,13 +40,9 @@ export default function ProfilePage() {
       </p>
 
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSave();
-        }}
         style={{
           background: "#fff",
-          maxWidth: "400px",
+          maxWidth: "500px",
           margin: "0 auto",
           padding: "2rem",
           borderRadius: "12px",
@@ -60,6 +57,7 @@ export default function ProfilePage() {
           onChange={handleChange}
           style={inputStyle}
         />
+
         <input
           type="text"
           name="breed"
@@ -68,6 +66,19 @@ export default function ProfilePage() {
           onChange={handleChange}
           style={inputStyle}
         />
+
+        <select
+          name="animalType"
+          value={profile.preferences?.animalType || ""}
+          onChange={handleChange}
+          style={inputStyle}
+        >
+          <option value="">Preferred Animal Type</option>
+          <option value="Dog">Dog</option>
+          <option value="Cat">Cat</option>
+          <option value="Other">Other</option>
+        </select>
+
         <input
           type="text"
           name="contact"
@@ -76,17 +87,19 @@ export default function ProfilePage() {
           onChange={handleChange}
           style={inputStyle}
         />
+
         <input
           type="email"
           name="email"
           placeholder="Email"
           value={profile.email || ""}
           readOnly
-          style={{ ...inputStyle, backgroundColor: "#f9f9f9", color: "#555" }}
+          style={inputStyle}
         />
 
         <button
-          type="submit"
+          type="button"
+          onClick={handleSave}
           style={{
             width: "100%",
             backgroundColor: "#222",
@@ -95,7 +108,6 @@ export default function ProfilePage() {
             border: "none",
             borderRadius: "8px",
             fontWeight: "bold",
-            marginTop: "1rem",
             cursor: "pointer",
           }}
         >

@@ -10,7 +10,11 @@ export default function Navbar() {
   const currentType = new URLSearchParams(location.search).get("type");
 
   const handleSearchByType = (type) => {
-    const zip = user?.preferences?.location || "80014"; 
+    const zip = user?.preferences?.location || "80014";
+    localStorage.setItem("animalType", type);
+    localStorage.setItem("searchZip", zip);
+    console.log("Navbar animalType", type);
+    console.log("Navbar searchZip", zip);
     navigate(`/search?type=${type}&zip=${zip}`);
   };
 
@@ -30,6 +34,7 @@ export default function Navbar() {
 
         {user ? (
           <>
+            <Link to="/saved">Saved Pets</Link>
             <Link to="/profile">Profile</Link>
             <span onClick={() => {
               localStorage.removeItem("user");

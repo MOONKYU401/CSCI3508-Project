@@ -16,7 +16,7 @@ const connectDB = async () => {
 connectDB();
 
 const PetSchema = new mongoose.Schema({
-  name: { type: String, required: true, index: true },
+  Name: { type: String, required: true, index: true },
   age: { type: Number, min: [0, 'Age must be a positive number'] },
   species: {
     type: String,

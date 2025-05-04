@@ -5,17 +5,21 @@ import PetCard from "../components/PetCard";
 export default function HomePage() {
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
-  const user = JSON.parse(localStorage.getItem("user"));
 
-  const zip = user?.preferences?.location || "80202";
-  const breed = user?.preferences?.breed || "";
-  const type = "Dog";
+  const user = JSON.parse(localStorage.getItem("user"));
+  const zip = user?.preferredZip || "80202";
+  const type = user?.preferredAnimalType || "Dog";
+  const breed = user?.preferredBreed || "";
 
   useEffect(() => {
     const fetchPets = async () => {
+      localStorage.setItem("searchZip", zip);
+      localStorage.setItem("animalType", type);
       setLoading(true);
+
       try {
-        const res = await fetch("https://api.petplace.com/animal", {
+        // ✅ 1차 검색: zip + type + breed
+        const primaryRes = await fetch("https://api.petplace.com/animal", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -37,9 +41,38 @@ export default function HomePage() {
           }),
         });
 
-        const data = await res.json();
-        const results = data.animal || []; 
-        setPets(results.slice(0, 10));     
+        const primaryData = await primaryRes.json();
+        let results = primaryData.animal || [];
+
+        // ✅ 2차 백업 검색: zip + type only (if no results)
+        if (results.length === 0 && breed) {
+          const backupRes = await fetch("https://api.petplace.com/animal", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              locationInformation: {
+                clientId: null,
+                zipPostal: zip,
+                milesRadius: "25",
+              },
+              animalFilters: {
+                startIndex: 0,
+                filterAnimalType: type,
+                filterBreed: [], // breed 생략
+                filterGender: "",
+                filterAge: null,
+                filterSize: null,
+              },
+            }),
+          });
+
+          const backupData = await backupRes.json();
+          results = backupData.animal || [];
+        }
+
+        setPets(results.slice(0, 10)); // 최대 10개
       } catch (err) {
         console.error("Error fetching pets:", err);
         setPets([]);
@@ -49,7 +82,7 @@ export default function HomePage() {
     };
 
     fetchPets();
-  }, [zip, breed]);
+  }, [zip, type, breed]);
 
   return (
     <>

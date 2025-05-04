@@ -24,16 +24,19 @@ const UserSchema = new mongoose.Schema({
     default: "",
     match: [/^\d{5}$/, 'Must be a valid 5-digit ZIP code']
   },
+  preferredAnimalType: {
+    type: String,
+    enum: ["Dog", "Cat", "Other"],
+    default: "Dog"
+  },
   savedPets: [
     {
       animalId: String,
-      name: String,
+      Name: String,
       zipPostal: String,
       animalType: String
     }
   ]
-  
-  
 });
 
 module.exports = mongoose.model("User", UserSchema);

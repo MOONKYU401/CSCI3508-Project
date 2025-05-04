@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function SearchForm() {
-  const [type, setType] = useState("Dog");
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const initialType = searchParams.get("type") || "Dog";
+
+  const [type, setType] = useState(initialType);
   const [breed, setBreed] = useState("");
   const [zip, setZip] = useState("");
   const [allBreeds, setAllBreeds] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
-  const navigate = useNavigate();
 
-
+ 
   useEffect(() => {
+    console.log("initialType  ",initialType);
+    console.log("type",searchParams.get("type"));
+   
     const fetchBreeds = async () => {
       try {
         const res = await fetch(`https://api.petplace.com/breed/${type}`);
@@ -23,10 +29,15 @@ export default function SearchForm() {
 
     fetchBreeds();
     setSuggestions([]);
-    setBreed(""); 
+    setBreed("");
   }, [type]);
 
-  
+ 
+  // useEffect(() => {
+  //   localStorage.setItem("searchZip", zip);
+  //   localStorage.setItem("animalType", type);
+  // }, [zip, type]);
+
   const handleBreedChange = (e) => {
     const input = e.target.value;
     setBreed(input);
@@ -35,7 +46,7 @@ export default function SearchForm() {
       const matches = allBreeds.filter((b) =>
         b.breedValue.toLowerCase().includes(input.toLowerCase())
       );
-      setSuggestions(matches.slice(0, 5)); 
+      setSuggestions(matches.slice(0, 5));
     } else {
       setSuggestions([]);
     }
@@ -48,6 +59,8 @@ export default function SearchForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    localStorage.setItem("searchZip", zip);
+    localStorage.setItem("animalType", type);
     navigate(`/search?type=${type}&breed=${breed}&zip=${zip}`);
   };
 
@@ -61,7 +74,6 @@ export default function SearchForm() {
           <option value="Other">Other</option>
         </select>
 
-       
         <div style={{ position: "relative", minWidth: "160px" }}>
           <input
             type="text"

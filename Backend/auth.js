@@ -11,47 +11,44 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 // ----------------- Signup -----------------
 router.post("/signup", async (req, res) => {
-    try {
-      const {
-        Email,
-        password,
-        FullName,
-        phone,
-        state,
-        preferredBreed,
-        preferredZip,
-        preferredAnimalType 
-      } = req.body;
-  
-      const existingUser = await User.findOne({ Email });
-      if (existingUser) {
-        return res.status(409).json({ message: "Email already in use" });
-      }
-  
-      const hashedPassword = await bcrypt.hash(password, 10);
-  
-      const newUser = new User({
-        Email,
-        password: hashedPassword,
-        FullName,
-        phone,
-        state,
-        preferredBreed,
-        preferredZip,
-        preferredAnimalType 
-      });
-  
-      await newUser.save();
-  
-      const tokenPayload = { _id: newUser._id, Email: newUser.Email };
-      const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: "7d" });
-  
-      res.status(201).json({ token, user: tokenPayload });
-    } catch (err) {
-      console.error("Signup error:", err);
-      res.status(500).json({ message: "Server error" });
+  try {
+    const {
+      Email,
+      password,
+      FullName,
+      phone,
+      state,
+      preferredZip
+    } = req.body;
+
+    const existingUser = await User.findOne({ Email });
+    if (existingUser) {
+      return res.status(409).json({ message: "Email already in use" });
     }
-  });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      Email,
+      password: hashedPassword,
+      FullName,
+      phone,
+      state,
+      preferredZip
+    });
+
+    await newUser.save();
+
+    const tokenPayload = { _id: newUser._id, Email: newUser.Email };
+    const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: "7d" });
+
+    res.status(201).json({ token, user: tokenPayload });
+  } catch (err) {
+    console.error("Signup error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
   
 
 // ----------------- Login -----------------

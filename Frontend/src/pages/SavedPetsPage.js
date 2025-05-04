@@ -27,15 +27,27 @@ export default function SavedPetsPage() {
     fetchSavedPets();
   }, []);
 
-  if (loading) return <p>Loading saved pets...</p>;
-
   return (
-    <div className="saved-pets-page">
-      <h2>Your Saved Pets</h2>
-      {savedPets.length === 0 ? (
-        <p>No pets saved yet.</p>
+    <div style={{ padding: "2rem" }}>
+      <h2 style={{ textAlign: "center", marginBottom: "2rem" }}>Your Saved Pets</h2>
+
+      {loading ? (
+        <p style={{ textAlign: "center" }}>Loading saved pets...</p>
+      ) : savedPets.length === 0 ? (
+        <div style={emptyCardStyle}>
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/616/616408.png"
+            alt="No pets"
+            style={{ width: "100px", marginBottom: "1rem" }}
+          />
+          <p style={{ fontSize: "1.2rem", color: "#555" }}>No pets saved yet. Start exploring!</p>
+        </div>
       ) : (
-        savedPets.map((pet, index) => <SavedPetCard key={index} pet={pet} />)
+        <div className="pet-grid">
+          {savedPets.map((pet, index) => (
+            <SavedPetCard key={index} pet={pet} />
+          ))}
+        </div>
       )}
     </div>
   );
@@ -76,8 +88,12 @@ function SavedPetCard({ pet }) {
 
   return (
     <div className="pet-card">
-      <img src={petData.coverImagePath || "https://via.placeholder.com/400x300"} alt={petData.Name} />
-      <div>
+      <img
+        src={petData.coverImagePath || "https://via.placeholder.com/400x300"}
+        alt={petData.Name}
+        style={{ objectFit: "cover", width: "100%", aspectRatio: "1 / 1", borderRadius: "8px" }}
+      />
+      <div style={{ padding: "1rem" }}>
         <h3>{petData.Name}</h3>
         <p>{petData.breed} • {petData.gender}</p>
         <p>Located at: {petData.City}, {petData.State}</p>
@@ -85,3 +101,13 @@ function SavedPetCard({ pet }) {
     </div>
   );
 }
+
+const emptyCardStyle = {
+  background: "#fffbe6",
+  maxWidth: "400px",
+  margin: "3rem auto",
+  padding: "2rem",
+  borderRadius: "12px",
+  boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+  textAlign: "center",
+};

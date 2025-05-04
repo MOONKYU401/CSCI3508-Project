@@ -40,7 +40,9 @@ export default function SavedPetsPage() {
             alt="No pets"
             style={{ width: "100px", marginBottom: "1rem" }}
           />
-          <p style={{ fontSize: "1.2rem", color: "#555" }}>No pets saved yet. Start exploring!</p>
+          <p style={{ fontSize: "1.2rem", color: "#555" }}>
+            No pets saved yet. Start exploring!
+          </p>
         </div>
       ) : (
         <div className="pet-grid">
@@ -57,29 +59,49 @@ function SavedPetCard({ pet }) {
   const [petData, setPetData] = useState(null);
   const [notFound, setNotFound] = useState(false);
 
-  const API_BASE = process.env.REACT_APP_API_BASE_URL;
-
   useEffect(() => {
     const fetchPetData = async () => {
       try {
-        const res = await axios.get(`${API_BASE}/external-api/pet/${pet.animalId}`);
-        setPetData(res.data);
-      } catch (err) {
-        if (err.response?.status === 404) {
-          setNotFound(true);
+        const res = await axios.post("https://api.petplace.com/animal", {
+          locationInformation: {
+            zipPostal: pet.zipPostal,
+            milesRadius: "10",
+            clientId: null,
+          },
+          animalFilters: {
+            startIndex: 0,
+            filterAnimalType: pet.animalType,
+            filterBreed: [],
+            filterGender: "",
+            filterAge: null,
+            filterSize: null,
+          },
+        });
+
+        const match = res.data.animal?.find(
+          (a) => String(a.animalId) === String(pet.animalId)
+        );
+
+        if (match) {
+          setPetData(match);
         } else {
-          console.error("Error fetching pet data", err);
+          setNotFound(true);
         }
+      } catch (err) {
+        console.error("Error fetching pet data", err);
+        setNotFound(true);
       }
     };
 
     fetchPetData();
-  }, [pet.animalId]);
+  }, [pet.animalId, pet.zipPostal, pet.animalType]);
 
   if (notFound) {
     return (
       <div className="pet-card not-found">
-        <p><strong>{pet.Name}</strong> has found a new home 🏠</p>
+        <p>
+          <strong>{pet.Name}</strong> has found a new home 🏠
+        </p>
       </div>
     );
   }
@@ -91,11 +113,16 @@ function SavedPetCard({ pet }) {
       <img
         src={petData.coverImagePath || "https://via.placeholder.com/400x300"}
         alt={petData.Name}
-        style={{ objectFit: "cover", width: "100%", aspectRatio: "1 / 1", borderRadius: "8px" }}
+        style={{
+          objectFit: "cover",
+          width: "100%",
+          aspectRatio: "1 / 1",
+          borderRadius: "8px",
+        }}
       />
       <div style={{ padding: "1rem" }}>
         <h3>{petData.Name}</h3>
-        <p>{petData.breed} • {petData.gender}</p>
+        <p>{petData.Breed1} {petData.Breed2 ? `• ${petData.Breed2}` : ""}</p>
         <p>Located at: {petData.City}, {petData.State}</p>
       </div>
     </div>

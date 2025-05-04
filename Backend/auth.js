@@ -9,7 +9,6 @@ const { isAuthenticated } = require("./auth_jwt");
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// ----------------- Signup -----------------
 router.post("/signup", async (req, res) => {
   try {
     const {
@@ -18,7 +17,8 @@ router.post("/signup", async (req, res) => {
       FullName,
       phone,
       state,
-      preferredZip
+      preferredZip,
+      preferredAnimalType 
     } = req.body;
 
     const existingUser = await User.findOne({ Email });
@@ -34,7 +34,8 @@ router.post("/signup", async (req, res) => {
       FullName,
       phone,
       state,
-      preferredZip
+      preferredZip,
+      preferredAnimalType 
     });
 
     await newUser.save();
@@ -45,7 +46,7 @@ router.post("/signup", async (req, res) => {
     res.status(201).json({ token, user: tokenPayload });
   } catch (err) {
     console.error("Signup error:", err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: err.message || "Server error" }); 
   }
 });
 

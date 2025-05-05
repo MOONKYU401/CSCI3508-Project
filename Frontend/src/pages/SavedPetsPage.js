@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function SavedPetsPage() {
   const [savedPets, setSavedPets] = useState([]);
@@ -65,6 +66,7 @@ function SavedPetCard({ pet, onRemove }) {
   const [petData, setPetData] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [removing, setRemoving] = useState(false);
+  const navigate = useNavigate();
 
   const API_BASE = process.env.REACT_APP_API_BASE_URL;
   const token = JSON.parse(localStorage.getItem("user"))?.token;
@@ -124,6 +126,19 @@ function SavedPetCard({ pet, onRemove }) {
     }
   };
 
+  const handleViewDetails = () => {
+    if (!petData) return;
+    navigate(`/pet/${petData.animalId}`, {
+      state: {
+        pet: petData,
+        extra: {
+          zipPostal: pet.zipPostal,
+          animalType: pet.animalType,
+        },
+      },
+    });
+  };
+
   if (notFound) {
     return (
       <div className="pet-card not-found">
@@ -153,22 +168,37 @@ function SavedPetCard({ pet, onRemove }) {
         <h3>{petData.Name}</h3>
         <p>{petData.Breed1} {petData.Breed2 ? `• ${petData.Breed2}` : ""}</p>
         <p>Located at: {petData.City}, {petData.State}</p>
-        <button
-          onClick={handleRemove}
-          disabled={removing}
-          style={{
-            marginTop: "0.5rem",
-            padding: "6px 12px",
-            border: "none",
-            backgroundColor: "#ffdddd",
-            color: "#c00",
-            borderRadius: "6px",
-            cursor: "pointer",
-            fontWeight: "bold",
-          }}
-        >
-          💔 Remove
-        </button>
+        <div style={{ marginTop: "0.8rem", display: "flex", gap: "0.5rem" }}>
+          <button
+            onClick={handleViewDetails}
+            style={{
+              padding: "6px 12px",
+              backgroundColor: "#eef",
+              border: "1px solid #99c",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontWeight: "bold",
+              color: "#000",
+            }}
+          >
+            🔍 View Details
+          </button>
+          <button
+            onClick={handleRemove}
+            disabled={removing}
+            style={{
+              padding: "6px 12px",
+              backgroundColor: "#ffdddd",
+              color: "#c00",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontWeight: "bold",
+            }}
+          >
+            💔 Remove
+          </button>
+        </div>
       </div>
     </div>
   );

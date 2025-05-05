@@ -47,7 +47,13 @@ export default function SavedPetsPage() {
       ) : (
         <div className="pet-grid">
           {savedPets.map((pet, index) => (
-            <SavedPetCard key={index} pet={pet} />
+            <SavedPetCard
+              key={index}
+              pet={pet}
+              onRemove={() =>
+                setSavedPets((prev) => prev.filter((p) => p.animalId !== pet.animalId))
+              }
+            />
           ))}
         </div>
       )}
@@ -55,9 +61,13 @@ export default function SavedPetsPage() {
   );
 }
 
-function SavedPetCard({ pet }) {
+function SavedPetCard({ pet, onRemove }) {
   const [petData, setPetData] = useState(null);
   const [notFound, setNotFound] = useState(false);
+  const [removing, setRemoving] = useState(false);
+
+  const API_BASE = process.env.REACT_APP_API_BASE_URL;
+  const token = JSON.parse(localStorage.getItem("user"))?.token;
 
   useEffect(() => {
     const fetchPetData = async () => {
@@ -96,12 +106,31 @@ function SavedPetCard({ pet }) {
     fetchPetData();
   }, [pet.animalId, pet.zipPostal, pet.animalType]);
 
+  const handleRemove = async () => {
+    if (!window.confirm(`Remove ${pet.Name}?`)) return;
+    setRemoving(true);
+    try {
+      await axios.delete(`${API_BASE}/auth/user/saved-pet/${pet.animalId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      onRemove();
+    } catch (err) {
+      console.error("Failed to remove pet", err);
+      alert("Failed to remove pet.");
+    } finally {
+      setRemoving(false);
+    }
+  };
+
   if (notFound) {
     return (
       <div className="pet-card not-found">
-        <p>
-          <strong>{pet.Name}</strong> has found a new home 🏠
-        </p>
+        <p><strong>{pet.Name}</strong> has found a new home 🏠</p>
+        <button onClick={handleRemove} disabled={removing}>
+          💔 Remove
+        </button>
       </div>
     );
   }
@@ -124,6 +153,22 @@ function SavedPetCard({ pet }) {
         <h3>{petData.Name}</h3>
         <p>{petData.Breed1} {petData.Breed2 ? `• ${petData.Breed2}` : ""}</p>
         <p>Located at: {petData.City}, {petData.State}</p>
+        <button
+          onClick={handleRemove}
+          disabled={removing}
+          style={{
+            marginTop: "0.5rem",
+            padding: "6px 12px",
+            border: "none",
+            backgroundColor: "#ffdddd",
+            color: "#c00",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
+        >
+          💔 Remove
+        </button>
       </div>
     </div>
   );
